@@ -23,8 +23,8 @@ namespace Registrar.Objects
     [Fact]
     public void Test_Equal_ReturnsTrueIfStudentsAreSame()
     {
-      Student firstStudent = new Student("Fred");
-      Student secondStudent = new Student("Fred");
+      Student firstStudent = new Student("Fred", new DateTime(2016, 7, 19));
+      Student secondStudent = new Student("Fred", new DateTime(2016, 7, 19));
 
       Assert.Equal(firstStudent, secondStudent);
     }
@@ -33,7 +33,7 @@ namespace Registrar.Objects
     public void Test_Save_SavesToDatabase()
     {
       //Arrange
-      Student testStudent = new Student("Fred");
+      Student testStudent = new Student("Fred", new DateTime(2016, 7, 19));
 
       //Act
       testStudent.Save();
@@ -47,7 +47,7 @@ namespace Registrar.Objects
     [Fact]
     public void Test_Find_FindsStudentInDatabase()
     {
-      Student testStudent = new Student("Joe");
+      Student testStudent = new Student("Joe", new DateTime(2016, 7, 19));
       testStudent.Save();
       Student foundStudent = Student.Find(testStudent.GetId());
       Assert.Equal(testStudent, foundStudent);
@@ -56,10 +56,10 @@ namespace Registrar.Objects
     [Fact]
     public void Test_Update_UpdatesStudentInDatabase()
     {
-      Student testStudent = new Student("Nancy");
+      Student testStudent = new Student("Nancy", new DateTime(2016, 7, 19));
       testStudent.Save();
       string newName = "Lulu";
-      testStudent.Update(newName);
+      testStudent.Update(newName, new DateTime(2016, 7, 19));
       Assert.Equal(newName, testStudent.GetName());
     }
 
@@ -69,7 +69,7 @@ namespace Registrar.Objects
       Course newcourse = new Course("Dr. Jerry", "Bio101");
       newcourse.Save();
 
-      Student newstudent = new Student("Tommy JOnes");
+      Student newstudent = new Student("Tommy JOnes", new DateTime(2016, 7, 19));
       newstudent.Save();
 
       newstudent.AddCourse(newcourse);

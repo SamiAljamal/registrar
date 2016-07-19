@@ -41,7 +41,7 @@ namespace Registrar
       };
 
       Post["/students/new"] = _ => {
-        Student newStudent = new Student(Request.Form["student-name"]);
+        Student newStudent = new Student(Request.Form["student-name"], new DateTime(2016, 7, 19));
         newStudent.Save();
         List<Student> allStudents = Student.GetAll();
         return View["students.cshtml", allStudents];
@@ -84,7 +84,7 @@ namespace Registrar
 
       Patch["/student/{id}"] = parameters => {
         Student selectedStudent = Student.Find(parameters.id);
-        selectedStudent.Update(Request.Form["student_name"]);
+        selectedStudent.Update(Request.Form["student_name"], new DateTime(2016, 7, 19));
 
         Dictionary<string,object> model = new Dictionary<string,object>();
         List<Course> studentcourse = selectedStudent.GetCourses();

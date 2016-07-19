@@ -205,7 +205,8 @@ namespace Registrar.Objects
       {
         int thisStudentId = rdr.GetInt32(0);
         string studentName = rdr.GetString(1);
-        Student foundStudent = new Student(studentName,thisStudentId);
+        DateTime studentAdmission = rdr.GetDateTime(2);
+        Student foundStudent = new Student(studentName, studentAdmission, thisStudentId);
         students.Add(foundStudent);
       }
 

@@ -39,11 +39,6 @@ namespace Registrar.Objects
 
       Assert.Equal(testCourses, resultCourses);
     }
-    public void Dispose()
-    {
-
-      Course.DeleteAll();
-    }
 
     [Fact]
     public void Test_Save_AssignsIdToCourse()
@@ -105,7 +100,7 @@ namespace Registrar.Objects
       Course newCourse = new Course("Dr. Jerry", "Bio101");
       newCourse.Save();
 
-      Student newStudent = new Student("Tommy JOnes");
+      Student newStudent = new Student("Tommy JOnes", new DateTime(2016, 7, 19));
       newStudent.Save();
 
       newCourse.AddStudent(newStudent);
@@ -113,6 +108,11 @@ namespace Registrar.Objects
       List<Student> result = newCourse.GetStudents();
 
       Assert.Equal(testList, result);
+    }
+    public void Dispose()
+    {
+      Student.DeleteAll();
+      Course.DeleteAll();
     }
   }
 }

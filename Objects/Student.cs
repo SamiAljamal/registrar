@@ -7,11 +7,13 @@ namespace Registrar.Objects
   public class Student
   {
     int _id;
+    DateTime _admission;
     string _name;
 
-    public Student (string name, int id = 0)
+    public Student (string name, DateTime admission, int id = 0)
     {
       _id = id;
+      _admission = admission;
       _name = name;
     }
 
@@ -26,7 +28,8 @@ namespace Registrar.Objects
         Student newStudent = (Student) otherStudent;
         bool idEquality = this.GetId() == newStudent.GetId();
         bool nameEquality = this.GetName() == newStudent.GetName();
-        return (idEquality && nameEquality);
+        bool admissionEquality = this.GetAdmission() == newStudent.GetAdmission();
+        return (idEquality && nameEquality && admissionEquality);
       }
     }
 
@@ -40,9 +43,19 @@ namespace Registrar.Objects
       return _name;
     }
 
+    public DateTime GetAdmission()
+    {
+      return _admission;
+    }
+
     public void SetName(string newName)
     {
       _name = newName;
+    }
+
+    public void SetAdmission(DateTime newAdmission)
+    {
+      _admission = newAdmission;
     }
 
     public static List<Student> GetAll()
@@ -60,7 +73,8 @@ namespace Registrar.Objects
       {
         int studentId = rdr.GetInt32(0);
         string studentName = rdr.GetString(1);
-        Student newStudent = new Student(studentName, studentId);
+        DateTime studentAdmission = rdr.GetDateTime(2);
+        Student newStudent = new Student(studentName, studentAdmission, studentId);
         allStudents.Add(newStudent);
       }
       if (rdr != null)
@@ -81,13 +95,17 @@ namespace Registrar.Objects
       SqlDataReader rdr;
       conn.Open();
 
-      SqlCommand cmd = new SqlCommand("INSERT INTO students (name) OUTPUT INSERTED.id VALUES (@StudentName);", conn);
+      SqlCommand cmd = new SqlCommand("INSERT INTO students (name, admission) OUTPUT INSERTED.id VALUES (@StudentName, @studentAdmission);", conn);
 
       SqlParameter nameParameter = new SqlParameter();
       nameParameter.ParameterName = "@StudentName";
       nameParameter.Value = this.GetName();
-
       cmd.Parameters.Add(nameParameter);
+
+      SqlParameter admissionParameter = new SqlParameter();
+      admissionParameter.ParameterName = "@StudentAdmission";
+      admissionParameter.Value = this.GetAdmission();
+      cmd.Parameters.Add(admissionParameter);
 
       rdr = cmd.ExecuteReader();
 
@@ -120,13 +138,15 @@ namespace Registrar.Objects
 
       int foundStudentId = 0;
       string foundStudentName = null;
+      DateTime foundStudentAdmission = new DateTime();
 
       while(rdr.Read())
       {
         foundStudentId = rdr.GetInt32(0);
         foundStudentName = rdr.GetString(1);
+        foundStudentAdmission = rdr.GetDateTime(2);
       }
-      Student foundStudent = new Student(foundStudentName, foundStudentId);
+      Student foundStudent = new Student(foundStudentName, foundStudentAdmission, foundStudentId);
 
       if (rdr != null)
       {
@@ -222,18 +242,23 @@ namespace Registrar.Objects
       }
       return courses;
     }
-    public void Update(string newName)
+    public void Update(string newName, DateTime newAdmission)
     {
       SqlConnection conn = DB.Connection();
       SqlDataReader rdr;
       conn.Open();
 
-      SqlCommand cmd = new SqlCommand("UPDATE students SET name = @NewName OUTPUT INSERTED.name WHERE id = @StudentId;", conn);
+      SqlCommand cmd = new SqlCommand("UPDATE students SET name = @NewName, admission = @NewAdmission OUTPUT INSERTED.name, INSERTED.admission WHERE id = @StudentId;", conn);
 
       SqlParameter newNameParameter = new SqlParameter();
       newNameParameter.ParameterName = "@NewName";
       newNameParameter.Value = newName;
       cmd.Parameters.Add(newNameParameter);
+
+      SqlParameter newAdmissionParameter = new SqlParameter();
+      newAdmissionParameter.ParameterName = "@NewAdmission";
+      newAdmissionParameter.Value = newAdmission;
+      cmd.Parameters.Add(newAdmissionParameter);
 
       SqlParameter StudentIdParameter = new SqlParameter();
       StudentIdParameter.ParameterName = "@StudentId";
@@ -244,6 +269,7 @@ namespace Registrar.Objects
       while(rdr.Read())
       {
         this._name = rdr.GetString(0);
+        this._admission = rdr.GetDateTime(1);
       }
 
       if (rdr != null)
