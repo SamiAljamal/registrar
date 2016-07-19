@@ -158,6 +158,68 @@ namespace Registrar.Objects
       }
       return foundCourse;
     }
+
+    public void Update(string newTeacher, string newName)
+    {
+      SqlConnection conn = DB.Connection();
+      SqlDataReader rdr;
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("UPDATE courses SET teacher = @NewTeacher, name = @NewName OUTPUT INSERTED.teacher, INSERTED.name WHERE id = @CourseId;", conn);
+
+      SqlParameter newTeacherParameter = new SqlParameter();
+      newTeacherParameter.ParameterName = "@NewTeacher";
+      newTeacherParameter.Value = newTeacher;
+      cmd.Parameters.Add(newTeacherParameter);
+
+      SqlParameter newNameParameter = new SqlParameter();
+      newNameParameter.ParameterName = "@NewName";
+      newNameParameter.Value = newName;
+      cmd.Parameters.Add(newNameParameter);
+
+      SqlParameter CourseIdParameter = new SqlParameter();
+      CourseIdParameter.ParameterName = "@CourseId";
+      CourseIdParameter.Value = this.GetId();
+      cmd.Parameters.Add(CourseIdParameter);
+      rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        this._teacher = rdr.GetString(0);
+        this._name = rdr.GetString(1);
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
+    public void Delete()
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("DELETE FROM courses WHERE id = @CourseId; DELETE FROM students_courses WHERE course_id = @CourseId", conn);
+
+      SqlParameter CourseIdParameter = new SqlParameter();
+      CourseIdParameter.ParameterName = "@CourseId";
+      CourseIdParameter.Value = this.GetId();
+
+      cmd.Parameters.Add(CourseIdParameter);
+      cmd.ExecuteNonQuery();
+
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
     public static void DeleteAll()
     {
       SqlConnection conn = DB.Connection();
@@ -165,7 +227,5 @@ namespace Registrar.Objects
       SqlCommand cmd = new SqlCommand("DELETE FROM courses;", conn);
       cmd.ExecuteNonQuery();
     }
-
-
   }
 }

@@ -73,5 +73,32 @@ namespace Registrar.Objects
       Assert.Equal(testCourse, foundCourse);
     }
 
+    [Fact]
+    public void Test_Update_UpdatesCourseInDatabase()
+    {
+      Course testCourse = new Course("Dr. Feelgood", "PSY101");
+      testCourse.Save();
+      string newTeacher = "Dr. Love";
+
+      testCourse.Update(newTeacher, "PSY101");
+
+      Assert.Equal(newTeacher, testCourse.GetTeacher());
+    }
+
+    [Fact]
+    public void Test_Delete_DeleteCoursefromDB()
+    {
+      Course testCourse = new Course("Dr. Feelgood", "PSY101");
+      Course testCourse2 = new Course("Dr. jerry", "biology101");
+      testCourse.Save();
+      testCourse2.Save();
+
+      List<Course> allcourses = new List<Course>{testCourse,testCourse2};
+      allcourses.Remove(testCourse);
+      testCourse.Delete();
+
+      Assert.Equal(allcourses,Course.GetAll());
+    }
+
   }
 }
