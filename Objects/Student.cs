@@ -162,9 +162,6 @@ namespace Registrar.Objects
         conn.Close();
       }
     }
-
-
-
     public List<Course> GetCourses()
     {
       SqlConnection conn = DB.Connection();

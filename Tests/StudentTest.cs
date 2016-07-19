@@ -84,7 +84,5 @@ namespace Registrar.Objects
       Student.DeleteAll();
       Course.DeleteAll();
     }
-
-
   }
 }

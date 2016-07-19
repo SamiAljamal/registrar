@@ -99,6 +99,20 @@ namespace Registrar.Objects
 
       Assert.Equal(allcourses,Course.GetAll());
     }
+    [Fact]
+    public void Test_AddStudent_AddsStudentToCourse()
+    {
+      Course newCourse = new Course("Dr. Jerry", "Bio101");
+      newCourse.Save();
 
+      Student newStudent = new Student("Tommy JOnes");
+      newStudent.Save();
+
+      newCourse.AddStudent(newStudent);
+      List<Student> testList = new List<Student>{newStudent};
+      List<Student> result = newCourse.GetStudents();
+
+      Assert.Equal(testList, result);
+    }
   }
 }
