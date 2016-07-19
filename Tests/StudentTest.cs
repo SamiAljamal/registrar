@@ -63,9 +63,28 @@ namespace Registrar.Objects
       Assert.Equal(newName, testStudent.GetName());
     }
 
+    [Fact]
+    public void Test_AddCourse_AddsCourseToStudent()
+    {
+      Course newcourse = new Course("Dr. Jerry", "Bio101");
+      newcourse.Save();
+
+      Student newstudent = new Student("Tommy JOnes");
+      newstudent.Save();
+
+      newstudent.AddCourse(newcourse);
+      List<Course> result = newstudent.GetCourses();
+      List<Course> testList = new List<Course>{newcourse};
+
+      Assert.Equal(testList, result);
+    }
+
     public void Dispose()
     {
       Student.DeleteAll();
+      Course.DeleteAll();
     }
+
+
   }
 }
