@@ -5,8 +5,34 @@
     <title></title>
   </head>
   <body>
-    <h2>@Model.GetName()</h2>
+    <h2>@Model["student"].GetName()</h2>
 
-    <a href="/students/all/">Back to list of students</a>
+    <ul>
+      @if(Model["courses"].Count !=0)
+      {
+        foreach(var course in Model["courses"])
+        {
+          <form action ="/student/@Model["student"].GetId()/drop/@course.GetId()" method="post"><li><label for="drop@course.GetId()">@course.GetName()</label><input type="hidden" name="_method" value="DELETE"> | <button type="submit" name="button">Drop this Course</button></li></form>
+        }
+
+      }
+      else
+      {
+        <h2>@Model["student"].GetName() is dumb. We took his money and he aint even in a course. The U. Broke Way!</h2>
+      }
+    </ul>
+
+    <form action ="/student/@Model["student"].GetId()" method="post">
+      <select name = "course_id">
+        @foreach (var studentcourse in Model["allCourses"])
+        {
+          <option value = "@studentcourse.GetId()">@studentcourse.GetName()</option>
+        }
+      </select>
+      <button type="submit" name="button">Add this Course</button>
+    </form>
+
+    <p><a href="/students/all/">Back to list of students</a></p>
+    <p><a href="/student/update/@Model["student"].GetId()">Update this student</a></p>
   </body>
 </html>

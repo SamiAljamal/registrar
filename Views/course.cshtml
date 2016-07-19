@@ -5,7 +5,23 @@
     <title></title>
   </head>
   <body>
-    <h2>@Model.GetName()</h2>
+    <h2>@Model["course"].GetName()</h2>
+
+    <h4>Current Students</h4>
+
+    <ul>
+    @if(Model["students"].Count !=0)
+    {
+      @foreach (var student in @Model["students"])
+      {
+        <li>@student.GetName()</li>
+      }
+    }
+    else
+    {
+      <h4>No students are currently enrolled in this course</h4>
+    }
+    </ul>
 
 
     <a href="/courses/all/">Back to list of courses</a>

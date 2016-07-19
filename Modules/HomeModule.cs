@@ -19,8 +19,13 @@ namespace Registrar
       };
 
       Get["/courses/{id}"] = parameters =>{
+
+        Dictionary<string,object> model = new Dictionary<string,object>();
         Course selectedCourse = Course.Find(parameters.id);
-        return View["course.cshtml", selectedCourse];
+        List<Student> studentsInCourse = selectedCourse.GetStudents();
+        model.Add("course", selectedCourse);
+        model.Add("students", studentsInCourse);
+        return View["course.cshtml", model];
       };
 
       Post["/courses/new"] = _ => {
@@ -35,16 +40,75 @@ namespace Registrar
         return View["students.cshtml", allStudents];
       };
 
-      Get["/students/{id}"] = parameters => {
-        Student selectedStudent = Student.Find(parameters.id);
-        return View["student.cshtml", selectedStudent];
-      };
-
       Post["/students/new"] = _ => {
         Student newStudent = new Student(Request.Form["student-name"]);
         newStudent.Save();
         List<Student> allStudents = Student.GetAll();
         return View["students.cshtml", allStudents];
+      };
+
+      Get["/student/{id}"] = parameters => {
+        Student selectedStudent = Student.Find(parameters.id);
+        Dictionary<string,object> model = new Dictionary<string,object>();
+        List<Course> studentcourse = selectedStudent.GetCourses();
+        List<Course> allCourses = Course.GetAll();
+
+        model.Add("student", selectedStudent);
+        model.Add("courses",studentcourse);
+        model.Add("allCourses", allCourses);
+
+
+        return View["student.cshtml",model];
+      };
+
+      Post["/student/{id}"] = parameters => {
+        Course selectedCourse = Course.Find(Request.Form["course_id"]);
+
+        Student selectedStudent = Student.Find(parameters.id);
+        selectedCourse.AddStudent(selectedStudent);
+
+        Dictionary<string,object> model = new Dictionary<string,object>();
+        List<Course> studentcourse = selectedStudent.GetCourses();
+        List<Course> allCourses = Course.GetAll();
+
+        model.Add("student", selectedStudent);
+        model.Add("courses",studentcourse);
+        model.Add("allCourses", allCourses);
+        return View["student.cshtml", model];
+      };
+
+      Get["/student/update/{id}"] = parameters => {
+        Student selectedStudent = Student.Find(parameters.id);
+        return View["student_update.cshtml", selectedStudent];
+      };
+
+      Patch["/student/{id}"] = parameters => {
+        Student selectedStudent = Student.Find(parameters.id);
+        selectedStudent.Update(Request.Form["student_name"]);
+
+        Dictionary<string,object> model = new Dictionary<string,object>();
+        List<Course> studentcourse = selectedStudent.GetCourses();
+        List<Course> allCourses = Course.GetAll();
+
+        model.Add("student", selectedStudent);
+        model.Add("courses",studentcourse);
+        model.Add("allCourses", allCourses);
+        return View["student.cshtml", model];
+      };
+
+      Delete["/student/{sid}/drop/{cid}"] = parameters => {
+        Student selectedStudent = Student.Find(parameters.sid);
+        Course selectedCourse = Course.Find(parameters.cid);
+        selectedStudent.DropCourse(selectedCourse);
+
+        Dictionary<string,object> model = new Dictionary<string,object>();
+        List<Course> studentcourse = selectedStudent.GetCourses();
+        List<Course> allCourses = Course.GetAll();
+
+        model.Add("student", selectedStudent);
+        model.Add("courses",studentcourse);
+        model.Add("allCourses", allCourses);
+        return View["student.cshtml", model];
       };
     }
   }

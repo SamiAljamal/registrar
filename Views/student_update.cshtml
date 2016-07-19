@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Update Student</title>
+  </head>
+  <body>
+    <form class="" action="/student/@Model.GetId()" method="post">
+      <input type="hidden" name="_method" value="PATCH">
+      <label for="student_name">Edit student name: </label>
+      <input type="text" name="student_name">
+      <button type="submit" name="button">Change this student</button>
+    </form>
+
+    <a href="/student/@Model.GetId()">Return to this student's information</a>
+    <a href="/students/all">Return to all students</a>
+
+  </body>
+</html>

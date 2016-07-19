@@ -162,6 +162,30 @@ namespace Registrar.Objects
         conn.Close();
       }
     }
+
+    public void DropCourse(Course dropCourse)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("DELETE FROM students_courses WHERE student_id = @StudentId AND course_id = @CourseId", conn);
+      SqlParameter studentIdParameter = new SqlParameter();
+      studentIdParameter.ParameterName = "@StudentId";
+      studentIdParameter.Value = this.GetId();
+
+      SqlParameter courseIdParameter = new SqlParameter();
+      courseIdParameter.ParameterName = "@CourseId";
+      courseIdParameter.Value = dropCourse.GetId();
+
+      cmd.Parameters.Add(studentIdParameter);
+      cmd.Parameters.Add(courseIdParameter);
+      cmd.ExecuteNonQuery();
+
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
     public List<Course> GetCourses()
     {
       SqlConnection conn = DB.Connection();
